@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset=utf-8>
+    <title>Test cookie path attribute parsing</title>
+    <meta name=help href="https://tools.ietf.org/html/rfc6265#section-5.2.4">
+    <meta name="timeout" content="long">
+    <script src="/resources/testharness.js"></script>
+    <script src="/resources/testharnessreport.js"></script>
+    <script src="/cookies/resources/cookie-test.js"></script>
+  </head>
+  <body>
+    <script>
+      const pathRedirectTests = [
+        {
+          cookie: "test=1; path=/cookies/attributes/resources/path.html",
+          expected: "test=1",
+          name: "Cookie sent for redirected path match",
+          location: "/cookies/attributes/resources/path.html",
+        },
+        {
+          cookie: "test=2; path=/cookies/attributes/resources/path/one.html",
+          expected: "test=2",
+          name: "Cookie sent for redirected path match (2)",
+          location: "/cookies/attributes/resources/path/one.html",
+        },
+        {
+          cookie: "test=3; path=/cookies/attributes/resources/path/",
+          expected: "test=3",
+          name: "Cookie sent for redirected path match (3)",
+          location: "/cookies/attributes/resources/path/one.html",
+        },
+        {
+          cookie: "test=4; path=/cookies/attributes/resources/path/",
+          expected: "test=4",
+          name: "Cookie sent for redirected path match (4)",
+          location: "/cookies/attributes/resources/path//one.html",
+        },
+        {
+          cookie: "test=5; path=/cookies/attributes/resources/path/one.html;",
+          expected: "test=5",
+          name: "Cookie sent for redirected path match (5)",
+          location: "/cookies/attributes/resources/path/one.html",
+        },
+        {
+          cookie: 'test=6; path="/cookies/attributes/resources/path/one.html;"',
+          expected: "",
+          name: "Cookie sent for redirected path match (6)",
+          location: "/cookies/attributes/resources/path/one.html",
+        },
+        {
+          cookie: "test=7a; path=/cookies/attributes/resources/p%61th/three.html",
+          expected: "test=7a",
+          name: "Cookie sent for redirected path match with partially URL encoded path",
+          location: "/cookies/attributes/resources/path/three.html",
+        },
+        {
+          cookie: "test=7b; path=/cookies/attributes/resources/path/three.html",
+          expected: "test=7b",
+          name: "Cookie sent for parially URL encoded redirect path match",
+          location: "/cookies/attributes/resources/p%61th/three.html",
+        },
+        {
+          cookie: ["testA=8; path=/cookies/attributes/resources",
+                   "testB=8; path=/cookies/attributes/resources/"],
+          expected: "testB=8; testA=8",
+          name: "Multiple cookies sent for multiple redirected path matches",
+          location: "/cookies/attributes/resources/path.html",
+        },
+        {
+          cookie: "test=9; path=/cookies/attributes/resources/path.html",
+          expected: "",
+          name: "No cookie sent for redirected path mismatch",
+          location: "/cookies/attributes/resources/otherpath.html",
+        },
+        {
+          cookie: "test=10; path=/cookies/attributes/resources/path/one.html",
+          expected: "",
+          name: "No cookie sent for redirected path mismatch (2)",
+          location: "/cookies/attributes/resources/path.html",
+        },
+        {
+          cookie: "test=11; path=/cookies/attributes/resources/path/one.html",
+          expected: "",
+          name: "No cookie sent for redirected path mismatch (3)",
+          location: "/cookies/attributes/resources/otherpath/one.html",
+        },
+        {
+          cookie: "test=12; path=/cookies/attributes/resources/path/one.html",
+          expected: "",
+          name: "No cookie sent for redirected path mismatch (4)",
+          location: "/cookies/attributes/resources/path/two.html",
+        },
+        {
+          cookie: "test=13; path=/cookies/attributes/resources/path/one.html/",
+          expected: "",
+          name: "No cookie sent for redirected path mismatch (5)",
+          location: "/cookies/attributes/resources/path/two.html",
+        },
+        {
+          cookie: "test=14; path=/cookies/attributes/resources/path/",
+          expected: "",
+          name: "No cookie sent for redirected path mismatch (6)",
+          location: "/cookies/attributes/resources/otherpath.html",
+        },
+        {
+          cookie: "test=15; path=/cookies/attributes/resources/path/one.html?",
+          expected: "",
+          name: "No cookie sent for redirected path mismatch (7)",
+          location: "/cookies/attributes/resources/path/one.html",
+        },
+        {
+          cookie: "test=16; path=/cookies/attributes/resources/path/one.html#",
+          expected: "",
+          name: "No cookie sent for redirected path mismatch (8)",
+          location: "/cookies/attributes/resources/path/one.html",
+        },
+        {
+          cookie: "test=17; path=/cookies/attributes/resources/path/one.html/",
+          expected: "",
+          name: "No cookie sent for redirected path mismatch (9)",
+          location: "/cookies/attributes/resources/path/one.html",
+        },
+      ];
+
+      for (const test of pathRedirectTests) {
+        httpRedirectCookieTest(test.cookie, test.expected, test.name,
+                               test.location);
+      }
+    </script>
+  </body>
+</html>
